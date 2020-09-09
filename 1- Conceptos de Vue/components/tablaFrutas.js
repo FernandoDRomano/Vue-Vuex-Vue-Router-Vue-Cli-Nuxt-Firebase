@@ -3,10 +3,12 @@ const tablaFrutas = {
     template: /* html */ `
         <section class="px-5">
             <h2 class="text-info">Primer Componente: Tabla de Frutas</h2>
-            <p class="h5 font-weight-bold">Repasando los conceptos de data, methods, computed, watch, componentes globales, eventos, localstorage, etc.</p>
+            <p class="h5 font-weight-bold">Repasando los conceptos de data, methods, computed, watch, componentes globales y locales, eventos, localstorage, clases dinamicas con vue, etc.</p>
+
+            <fruta-progreso :progreso="progresoFruta"></fruta-progreso>
 
             <div class="d-flex justify-content-between">
-                <form @submit.prevent="agregarNuevaFruta">
+                <form  v-if="cantidadFruta < 10" @submit.prevent="agregarNuevaFruta">
                     <div class="form-inline my-3">
 
                             <input 
@@ -48,22 +50,14 @@ const tablaFrutas = {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(fruta, $index) in filtrarFrutas" >
-                        <th> {{ fruta.id }} </th>
-                        <td> {{ fruta.nombre }} </td>
-                        <td> {{ fruta.cantidad }} </td>
-                        <td> 
-                            <span class="badge badge-pill" 
-                            :class="{ 'badge-success': fruta.cantidad > 0,  'badge-secondary': fruta.cantidad == 0, }">
-                            {{stock(fruta)}}
-                            </span>
-                        </td>
-                        <td> 
-                            <button @click="incrementarFruta(fruta.id)" class="btn btn-info font-weight-bold">+</button> 
-                            <button @click="restarFruta(fruta.id)" class="btn btn-warning text-white font-weight-bold">-</button> 
-                            <button @click="eliminarFruta(fruta.id)" class="btn btn-danger text-white font-weight-bold">Eliminar</button> 
-                        </td>
-                    </tr>
+                    <fruta 
+                        v-for="fruta in filtrarFrutas" 
+                        :fruta="fruta" 
+                        :key="fruta.id"
+                        @incrementarFruta="incrementarFruta"
+                        @restarFruta="restarFruta"
+                        @eliminarFruta="eliminarFruta">
+                    </fruta>
                     <tr>
                         <th></th><td></td><td></td><td></td>
                         <td class="text-dark font-weight-bold">Total {{ calcularTotal }} frutas</td>
@@ -72,6 +66,8 @@ const tablaFrutas = {
             </table>
 
         </section>
+
+        
     `,
     created(){
         if(JSON.parse(window.localStorage.getItem('frutas'))){
@@ -83,7 +79,7 @@ const tablaFrutas = {
             frutas: [], 
             total: 0,
             nuevaFruta: '',
-            busqueda: ''
+            busqueda: '',
         }
     },
     methods:{
@@ -111,9 +107,11 @@ const tablaFrutas = {
                 nombre: this.nuevaFruta,
                 cantidad: 0
             });
-
+    
             this.nuevaFruta = '';
-        }
+            
+        },
+
     },
     computed:{
 
@@ -138,6 +136,13 @@ const tablaFrutas = {
             return this.frutas.length > 0 ? this.frutas[this.frutas.length - 1].id : 0            
         },
 
+        cantidadFruta(){
+            return this.frutas.length;
+        },
+
+        progresoFruta(){
+            return this.cantidadFruta * 10;
+        }
     },
     watch:{
         frutas:{
@@ -145,6 +150,10 @@ const tablaFrutas = {
             handler: (newValue, oldValue) => {
                 window.localStorage.setItem('frutas', JSON.stringify(newValue))
             }
-        }
+        },
+    },
+    components:{
+        fruta, 
+        frutaProgreso
     }
 }
