@@ -2,7 +2,6 @@
     <div class="row justify-content-center">
         <div class="col-8">
             <h4 class="text-center font-weight-bold py-3">Editar Tarea</h4>
-            {{id}} - {{tarea}}
             <form @submit.prevent="updateTarea(tarea)" class="formulario">
                 <div class="form-group">
                     <label for="nombre">Nombre</label>

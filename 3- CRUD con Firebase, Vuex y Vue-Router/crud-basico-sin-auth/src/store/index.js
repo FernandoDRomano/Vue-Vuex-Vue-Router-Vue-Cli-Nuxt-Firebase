@@ -8,7 +8,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     tareas: [],
-    tarea: {}
+    tarea: {},
+    buscarTarea: ''
   },
   mutations: {
     setTareas(state, tareas){
@@ -17,6 +18,14 @@ export default new Vuex.Store({
 
     setTarea(state, tarea){
       state.tarea = tarea;
+    },
+
+    setBusqueda(state, buscar){
+      state.buscarTarea = buscar
+    },
+
+    getTareas(state, id){
+      state.tareas = state.tareas.filter(tarea => tarea.id != id)
     }
   },
   actions: {
@@ -55,8 +64,7 @@ export default new Vuex.Store({
     },
 
     //ACTUALIZAR TAREA
-    updateTarea({}, tarea){
-      console.log(tarea)
+    updateTarea(context, tarea){
       db.collection('tareas').doc(tarea.id).update({
         nombre: tarea.nombre,
         descripcion: tarea.descripcion
@@ -64,6 +72,44 @@ export default new Vuex.Store({
         .then( () => {
           router.push({name: 'Home'})
         })
+        .catch(error => console.error(error))
+    },
+
+    //AGREGAR TAREA
+    agregarTarea(context, tarea){
+      db.collection('tareas').add({
+        nombre: tarea.nombre,
+        descripcion: tarea.descripcion
+      })
+      .then( data => {
+        //VALIDO QUE SE HAYA CREADO EL NUEVO DOCUMENTO
+        if(data.id){
+          //REDIRECCIONO A LA HOME
+          router.push({name: 'Home'})
+        }
+      })
+      .catch(error => console.error(error))
+    },
+
+    //ELIMINAR TAREA
+    eliminarTarea({commit}, id){
+      db.collection('tareas').doc(id).delete()
+        .then( () => {
+            console.log("Tarea eliminada ...")
+            /* 
+              PODRIA HACER UNA CONSULTA A LA BD PARA OBTENER TODAS LAS TAREAS UNA VEZ ELIMINADA LA TAREA
+              dispatch('getTareas')
+            */
+
+            //O CREAR UNA MUTACIÓN PARA FILTRAR EN MEMORIA LA TAREA ELIMINADA
+            commit('getTareas', id)
+        })
+        .catch(error => console.error(error))
+    }
+  },
+  getters:{
+    tareasFitradas(state){
+      return state.tareas.filter(tarea => tarea.nombre.includes(state.buscarTarea))
     }
   },
   modules: {
