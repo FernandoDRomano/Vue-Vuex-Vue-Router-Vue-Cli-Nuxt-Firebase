@@ -3,6 +3,16 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+/* CONFIGURACIÓN DE VUELIDATE */
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+Vue.use(BootstrapVue)
+Vue.use(IconsPlugin)
+
+/* CONFIGURACIÓN DE BOOSTRAP-VUE */
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
+
+/* CONFIGURACIÓN DE FIREBASE */
 const firebase = require('firebase/app')
 
 require("firebase/auth");

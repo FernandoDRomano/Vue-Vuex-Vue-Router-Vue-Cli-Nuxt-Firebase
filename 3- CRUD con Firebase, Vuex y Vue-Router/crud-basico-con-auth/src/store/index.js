@@ -56,7 +56,10 @@ export default new Vuex.Store({
             router.push({name: 'Home'})
         })
         .catch(error => {
-          commit('setError', error.message)
+          if(error.code === 'auth/email-already-in-use'){
+            const mensaje = "Error: este Email ya se encuentra en uso"
+            commit('setError', mensaje) 
+          }
         });
     },
 
