@@ -2,7 +2,7 @@
     <div class="row justify-content-center">
         <div class="col-6">
         <h2 class="text-center py-4">Login</h2>
-            <p v-if="error" class="text-danger text-center font-weight-bold pb-2">{{error}}</p>
+            <p v-if="error" class="text-danger text-center font-weight-bold pb-2">{{mostrarError}}</p>
             <form @submit.prevent="enviarFormulario" class="formulario">
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="form-group mb-0">
-                  <input  type="submit" class="form-control btn btn-block btn-primary" value="Ingresar">
+                    <button type="submit" class="form-control btn btn-block btn-primary">Registrarse</button>
                 </div>
             </form>
 
@@ -66,7 +66,18 @@
             }
         },
         computed:{
-            ...mapState(['error'])
+            ...mapState(['error']),
+            mostrarError(){
+                const inputs = document.getElementsByTagName('input')
+                inputs.forEach(element => {
+                    this.usuario.email = ''
+                    this.usuario.password = ''
+                    element.classList.replace('is-valid', 'is-invalid')
+                    element.classList.add('inputInvalidoError')
+                });
+
+                return this.error
+            }
         },
         methods: {
             ...mapActions(['loginUsuario']),

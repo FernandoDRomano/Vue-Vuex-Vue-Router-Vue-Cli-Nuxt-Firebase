@@ -13,7 +13,8 @@ export default new Vuex.Store({
     error: '',
     tareas: [],
     tarea: {},
-    buscarTarea: ''
+    buscarTarea: '',
+    cargando: true
   },
   mutations: {
     setUsuario(state, payload){
@@ -38,6 +39,10 @@ export default new Vuex.Store({
 
     getTareas(state, id){
       state.tareas = state.tareas.filter(tarea => tarea.id != id)
+    },
+
+    setCargando(state, payload){
+      state.cargando = payload
     }
 
   },
@@ -81,7 +86,10 @@ export default new Vuex.Store({
           router.push({name: 'Home'})
         })
         .catch(error => {
-          commit('setError', error.message)
+          if(error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password'){
+            const mensaje = "Error: email o password incorrectos"
+            commit('setError', mensaje) 
+          }
         })
     },
 
@@ -118,7 +126,8 @@ export default new Vuex.Store({
   
               tareas.push(tarea);
             });
-  
+            
+            commit('setCargando', false)
             commit('setTareas', tareas)
           
         })
