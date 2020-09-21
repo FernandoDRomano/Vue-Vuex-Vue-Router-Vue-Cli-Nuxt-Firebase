@@ -113,7 +113,7 @@ export default new Vuex.Store({
       let tareas = [];
       console.log("getTareas dice: "+ state.usuario.email)
       //var user = firebase.auth().currentUser;
-
+      commit('setCargando', true)
       db.collection(state.usuario.email).get()
         .then(datos => {
 
