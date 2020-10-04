@@ -14,13 +14,13 @@
         <v-card-text>
           <v-row>
             <v-col cols="6">
-              <v-btn class=" red darken-2" dark :block="true" rounded>
+              <v-btn class=" red darken-2" dark :block="true" rounded @click="ingresarUsuario('google')">
                 Google
                 <v-icon right dark :small="true"> fab fa-google </v-icon>
               </v-btn>
             </v-col>
             <v-col cols="6">
-              <v-btn class="" color="info" :block="true" rounded>
+              <v-btn class="" color="info" :block="true" rounded @click="ingresarUsuario('facebook')">
                 Facebook
                 <v-icon right dark :small="true"> fab fa-facebook-f </v-icon>
               </v-btn>
@@ -48,12 +48,18 @@
 </template>
 
 <script>
+
+import {mapActions} from 'vuex'
+
 export default {
   name: "viewLogin",
   data() {
       return {
           login: true
       }
+  },
+  methods: {
+    ...mapActions(['ingresarUsuario']),
   },
 };
 </script>
